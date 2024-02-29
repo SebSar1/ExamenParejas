@@ -21,11 +21,18 @@ import UserInterface.Form.SplashScreenForm;
 
 public class App {
     public static void main(String[] args) throws InterruptedException {
-
-        iniciarSistema();
+        saMostrarMensaje();
+        saIniciarSistema();
     }
-
-    public static void iniciarSistema() throws InterruptedException {
+    public static void saMostrarMensaje() {
+        String saMensaje = "Este programa se dividira en dos partes,la primera se mostrara en la terminal y la segunda se usara un interfaz";
+        String saTitulo = "!Bienvenido PachaLover!";
+        int saOpcion = JOptionPane.showConfirmDialog(null, saMensaje, saTitulo, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        if (saOpcion == JOptionPane.OK_OPTION || saOpcion == JOptionPane.CLOSED_OPTION) {
+            return; 
+        }
+    }
+    public static void saIniciarSistema() throws InterruptedException {
         FlatLightLaf.setup();
         FlatLightLaf.supportsNativeWindowDecorations();
         try {
@@ -37,17 +44,17 @@ public class App {
         Rusia oRusia = new Rusia();
         oRusia.iniciar();
         MainForm mainForm = new MainForm();
-        JFrame frame = new JFrame("AntBots");
-        frame.add(mainForm);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+        JFrame saframe = new JFrame("AntBots");
+        saframe.add(mainForm);
+        saframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        saframe.pack();
         ImageIcon icon = new ImageIcon("Resource\\Icono.png");
         // Cambia
         // la ruta
         // logo
-        frame.setIconImage(icon.getImage());
-        frame.setSize(830, 750);
-        frame.setVisible(true);
+        saframe.setIconImage(icon.getImage());
+        saframe.setSize(830, 750);
+        saframe.setVisible(true);
 
     }
 }
