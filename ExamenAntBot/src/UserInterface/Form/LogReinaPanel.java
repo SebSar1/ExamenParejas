@@ -28,6 +28,7 @@ public class LogReinaPanel extends JPanel {
     private SebButton loginButton;
     private Image backgroundImage;
     private SebButton btnRegresar;
+    private SebButton btnInfo;
 
     public LogReinaPanel() {
         initializeComponents();
@@ -42,6 +43,7 @@ public class LogReinaPanel extends JPanel {
         loginButton = new SebButton("Login");
         loginButton.setPreferredSize(new Dimension(200, 50));
         btnRegresar = new SebButton("Regresar");
+        btnInfo = new SebButton("Usuario:1      Contraseña:contrasena1");
 
     }
 
@@ -62,6 +64,8 @@ public class LogReinaPanel extends JPanel {
         panelRegresar.setOpaque(false); // Hacer transparente el panel
 
         panelRegresar.add(btnRegresar); // Agregar el botón "Regresar" al panel
+        panelRegresar.add(btnInfo);// Agregar el botón "Regresar" al panel
+
         add(panelRegresar, BorderLayout.SOUTH);
     }
 

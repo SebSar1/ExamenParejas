@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -24,14 +25,17 @@ public class App {
         saMostrarMensaje();
         saIniciarSistema();
     }
+
     public static void saMostrarMensaje() {
         String saMensaje = "Este programa se dividira en dos partes,la primera se mostrara en la terminal y la segunda se usara un interfaz";
         String saTitulo = "!Bienvenido PachaLover!";
-        int saOpcion = JOptionPane.showConfirmDialog(null, saMensaje, saTitulo, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        int saOpcion = JOptionPane.showConfirmDialog(null, saMensaje, saTitulo, JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE);
         if (saOpcion == JOptionPane.OK_OPTION || saOpcion == JOptionPane.CLOSED_OPTION) {
-            return; 
+            return;
         }
     }
+
     public static void saIniciarSistema() throws InterruptedException {
         FlatLightLaf.setup();
         FlatLightLaf.supportsNativeWindowDecorations();
@@ -40,9 +44,9 @@ public class App {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        SplashScreenForm.show();
         Rusia oRusia = new Rusia();
         oRusia.iniciar();
+        SplashScreenForm.show();
         MainForm mainForm = new MainForm();
         JFrame saframe = new JFrame("AntBots");
         saframe.add(mainForm);

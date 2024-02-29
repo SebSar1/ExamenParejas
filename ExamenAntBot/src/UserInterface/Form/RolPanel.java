@@ -118,7 +118,7 @@ public class RolPanel extends JPanel {
     private void LogLarvaPanel() {
         try {
             removeAll();
-            add(new LogLarvaPanel());
+            add(new SALogLarvaPanel());
             revalidate();
             repaint();
         } catch (Exception ex) {
@@ -153,7 +153,6 @@ public class RolPanel extends JPanel {
                     "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 
     private void loadImage() {
         ImageIcon imagenFondo = new ImageIcon(
