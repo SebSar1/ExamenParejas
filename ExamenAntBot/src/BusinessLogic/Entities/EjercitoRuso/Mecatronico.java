@@ -9,7 +9,7 @@ public class Mecatronico extends Hormiga {
         super(nombre);
     }
 
-    public void ensamblar(HormigaRusa hRusa, AntBot antBot, IABOT iaBot) throws InterruptedException {
+    public void ensamblar(SAHormigaRusa hRusa, AntBot antBot, IABOT iaBot) throws InterruptedException {
         System.out.println("Ensamblando AntBot, con sus potenciadores");
         antBot.unirseHormigaRusa(hRusa);
     }

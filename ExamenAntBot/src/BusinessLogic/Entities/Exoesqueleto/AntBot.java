@@ -1,11 +1,11 @@
 package Exoesqueleto;
 
 import EjercitoRuso.IhomigaExtremidad;
-import EjercitoRuso.HormigaRusa;
+import EjercitoRuso.SAHormigaRusa;
 import InteligenciaArtificial.IABOT;
 
-public class AntBot extends IABOT implements IhomigaExtremidad{
-    
+public class AntBot extends IABOT implements IhomigaExtremidad {
+
     private FuentePoder fuentePoder;
     private Tenazas tenazas;
     private SensoresOpticos sensor;
@@ -17,12 +17,13 @@ public class AntBot extends IABOT implements IhomigaExtremidad{
     private Tronco tronco;
     private Alas alas;
     private Transductores transductores;
+
     public AntBot(IABOT iaBot) {
         super(iaBot);
         // ssEFuentePoder = new FuentePoder();
         tenazas = new Tenazas();
         sensor = new SensoresOpticos();
-        radio = new Radio();    
+        radio = new Radio();
         antenas = new Antenas();
         procesador = new Procesador();
         tronco = new Tronco();
@@ -31,7 +32,7 @@ public class AntBot extends IABOT implements IhomigaExtremidad{
         transductores = new Transductores();
     }
 
-    public void unirseHormigaRusa(HormigaRusa hRusa) throws InterruptedException {
+    public void unirseHormigaRusa(SAHormigaRusa hRusa) throws InterruptedException {
         if (hRusa.getClasificacion().equals("Zangano")) {
             alas = new Alas();
             alas.volar();
@@ -39,7 +40,7 @@ public class AntBot extends IABOT implements IhomigaExtremidad{
         System.out.println("Hormiga Rusa: " + hRusa.getClasificacion() + " ha ingresado correctamente al AntBot");
     }
 
-    public void controlarAcciones(){
+    public void controlarAcciones() {
         transductores.correr();
         transductores.saltar();
         antenas.detectarSonido();
@@ -54,13 +55,12 @@ public class AntBot extends IABOT implements IhomigaExtremidad{
 
     @Override
     public String traducirIngles(String texto) {
-       return texto;
+        return texto;
     }
+
     @Override
     public String traducirRuso(String texto) {
-       return texto;
+        return texto;
     }
-
-
 
 }

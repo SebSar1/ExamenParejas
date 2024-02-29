@@ -12,15 +12,20 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkContras
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme;
 
 import BusinessLogic.BL.HormigaBL;
+import BusinessLogic.SAExamen.SAHervivoro;
 import InteligenciaArtificial.Rusia;
 import DataAccess.DTO.HormigaDTO;
+import EjercitoRuso.SAHormigaRusa;
 import UserInterface.Form.MainForm;
 import UserInterface.Form.SplashScreenForm;
 
 public class App {
     public static void main(String[] args) throws InterruptedException {
-
-        iniciarSistema();
+        SAHormigaRusa hormifa = new SAHormigaRusa("sebas", "prueba");
+        if (hormifa.saBuscar(new SAHervivoro()))
+            System.out.println("se encontro");
+        hormifa.saComer(new SAHervivoro());
+        // iniciarSistema();
     }
 
     public static void iniciarSistema() throws InterruptedException {

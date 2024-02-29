@@ -1,23 +1,23 @@
 package InteligenciaArtificial;
+
 import java.util.Random;
 import java.util.Scanner;
 
 import EjercitoRuso.ExpertoIngles;
 import EjercitoRuso.ExpertoRuso;
-import EjercitoRuso.HormigaRusa;
+import EjercitoRuso.SAHormigaRusa;
 import EjercitoRuso.Mecatronico;
 import Exoesqueleto.AntBot;
 import Exoesqueleto.FuentePoder;
 import InteligenciaArtificial.IABOT;
 import Exoesqueleto.Alas;
 
-
 public class Rusia {
-    String[] nombres = {"Zangano", "Soldado", "Rastreadora"};
+    String[] nombres = { "Zangano", "Soldado", "Rastreadora" };
     int numHormiga;
 
     public void iniciar() throws InterruptedException {
-        
+
         Random rand = new Random();
         Scanner sc = new Scanner(System.in);
         boolean ingresoCorrecto = false;
@@ -58,7 +58,7 @@ public class Rusia {
                 System.out.println("\033[32m" + "Peloton " + (contadorPelotones + 1) + " :" + "\u001B[0m");
                 String identificadorSoldado = "HormigaRusa " + (contadorHormigasRusasTotales);
                 contadorHormigasRusasTotales++;
-                HormigaRusa hormigaRusa = new HormigaRusa(identificadorSoldado, nombres[numHormiga]);
+                SAHormigaRusa hormigaRusa = new SAHormigaRusa(identificadorSoldado, nombres[numHormiga]);
                 AntBot antbot = new AntBot(iaBot);
                 System.out.println("\033[35m" + identificadorSoldado + " :" + "\033[36m");
                 mecatronico.ensamblar(hormigaRusa, antbot, iaBot);
@@ -66,11 +66,11 @@ public class Rusia {
                 antbot.controlarAcciones();
                 sc.nextLine();
                 limpiarConsola();
-                if (hormigaRusa.getClasificacion().equalsIgnoreCase("zangano")) {         
+                if (hormigaRusa.getClasificacion().equalsIgnoreCase("zangano")) {
                     System.out.println("Desea volar?");
                     String ssdecisionVolar = sc.nextLine();
                     if (ssdecisionVolar.toLowerCase().equals("si")) {
-    
+
                         alas.volar();
                         System.out.println("Reemplazando batería de la fuente de poder ");
                         hormigaRusa.reemplazarBateriaFuente(fuentePoder);
