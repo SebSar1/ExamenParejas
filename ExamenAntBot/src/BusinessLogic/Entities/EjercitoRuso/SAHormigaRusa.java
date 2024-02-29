@@ -5,9 +5,13 @@ import Exoesqueleto.FuentePoder;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import BusinessLogic.SAExamen.ISAHormiga;
 import BusinessLogic.SAExamen.ISAIA;
@@ -55,37 +59,48 @@ public class SAHormigaRusa extends Hormiga implements IhomigaExtremidad, ISAIA, 
     }
 
     // Método para eliminar la primera línea que contenga "Herbivoro"
-    @Override
     public boolean saComer(SAAlimento saAlimento) {
         boolean saEliminado = false;
-        try (BufferedReader br = new BufferedReader(new FileReader("src\\BusinessLogic\\SAExamen\\setAlimento.txt"));
-                BufferedWriter bw = new BufferedWriter(new FileWriter("archivo_temp.txt"))) {
+        List<String> lineasArchivo = new ArrayList<>();
+
+        // Leer el contenido del archivo original y almacenarlo en un ArrayList
+        try (BufferedReader br = new BufferedReader(new FileReader("src\\BusinessLogic\\SAExamen\\setAlimento.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 if (!saEliminado && linea.trim().equalsIgnoreCase("Herbivoro")) {
                     saEliminado = true;
-                    continue; // Salta esta línea sin escribirla en el nuevo archivo
+                    continue; // Salta esta línea sin almacenarla en el ArrayList
                 }
-                bw.write(linea);
-                bw.newLine();
+                lineasArchivo.add(linea);
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return false; // Si ocurre un error, devuelve false
         }
 
-        // Cerrar el archivo temporal antes de realizar el cambio de nombre
-        // Renombrar el archivo temporal al original
-        if (saEliminado) {
-            File archivo = new File("src\\BusinessLogic\\SAExamen\\setAlimento.txt");
-            File tempArchivo = new File("archivo_temp.txt");
-            if (tempArchivo.renameTo(archivo)) {
-                System.out.println("Archivo original actualizado correctamente.");
-            } else {
-                System.err.println("Error al actualizar el archivo original.");
+        // Eliminar el contenido del archivo original
+        try (PrintWriter writer = new PrintWriter("src\\BusinessLogic\\SAExamen\\setAlimento.txt")) {
+            writer.print("");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false; // Si ocurre un error, devuelve false
+        }
+
+        // Escribir el contenido del ArrayList de nuevo en el archivo original
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src\\BusinessLogic\\SAExamen\\setAlimento.txt"))) {
+            for (String linea : lineasArchivo) {
+                bw.write(linea);
+                bw.newLine();
             }
+            if (saEliminado) {
+                return true; // Devuelve true si se eliminó la línea "Herbivoro"
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false; // Si ocurre un error, devuelve false
         }
 
-        return saEliminado;
+        return false; // Si no se eliminó la línea "Herbivoro", devuelve false
     }
 
 }
