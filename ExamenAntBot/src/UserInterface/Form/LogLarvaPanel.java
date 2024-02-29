@@ -96,7 +96,7 @@ public class LogLarvaPanel extends JPanel {
     private void ReinaPanel() {
         try {
             removeAll();
-            add(new PnlReina());
+            add(new SAPnlReina());
             revalidate();
             repaint();
         } catch (Exception ex) {
