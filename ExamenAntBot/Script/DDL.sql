@@ -1,4 +1,5 @@
--- database: ../database/EXOBOT.sqlite
+-- database: ../Data/EXOBOT.sqlite
+-- Data: ../Data/EXOBOT.sqlite
 /*
 CopyRight
 autor:MRGONORREA
@@ -13,6 +14,8 @@ DROP TABLE IF EXISTS HormigaTipo;
 DROP TABLE IF EXISTS Persona;
 
 DROP TABLE IF EXISTS PersonaTipo;
+
+DROP TABLE IF EXISTS HormigaComida;
 
 CREATE TABLE IABot (
      IdIABot        integer primary key autoincrement
@@ -59,6 +62,14 @@ CREATE TABLE UsuarioSistema (
     ,FechaModifica          DATE
 );
 
+CREATE TABLE saHormigaComida (
+    IdHormiga               INTEGER primary key autoincrement
+    ,HormigaTipo            TEXT NOT NULL
+    ,CodigoHormiga          TEXT NOT NULL UNIQUE
+    ,Estado                 VARCHAR(1) NOT NULL DEFAULT('A')
+    ,Comio                  TEXT NOT NULL 
+    ,Region                 TEXT
+);
 
 CREATE TRIGGER limite_filas
 BEFORE INSERT ON HormigaTipo
