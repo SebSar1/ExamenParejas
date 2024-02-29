@@ -4,6 +4,8 @@ Carnivoro
 Carnivoro
 Herbivoro
 Herbivoro
+Herbivoro
+Herbivoro
 Omnivoro
 Omnivoro
 Omnivoro

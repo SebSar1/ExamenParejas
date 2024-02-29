@@ -7,6 +7,9 @@ public abstract class Hormiga {
         this.ssNombre = ssNombre;
     }
 
+    public Hormiga() {
+    }
+
     public String getssNombre() {
         return ssNombre;
     }

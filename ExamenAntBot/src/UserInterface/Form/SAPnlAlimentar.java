@@ -21,8 +21,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import BusinessLogic.BL.HormigaBL;
-import DataAccess.DTO.HormigaDTO;
+import BusinessLogic.BL.saHormigaComidaBL;
+import BusinessLogic.SAExamen.SAHervivoro;
+import BusinessLogic.BL.saHormigaComidaBL;
+import DataAccess.DTO.saHormigaComidaDTO;
+import EjercitoRuso.SAHormigaRusa;
+import DataAccess.DTO.saHormigaComidaDTO;
 import UserInterface.CustomerControl.SebButton;
 import UserInterface.CustomerControl.SebLabel;
 
@@ -43,28 +47,28 @@ public class SAPnlAlimentar extends JPanel {
 
     private void initializeComponents() {
         saBtnRegresar = new SebButton("Regresar");
-        saBtnIdHormiga = new SebButton("Alimentar");
+        saBtnIdHormiga = new SebButton("IdHormiga");
     }
 
     private void showHormigasTabla() {
         try {
-            String[] encabezado = { "IdHormiga", "IdHormigaTipo", "Codigo", "Nombre", "Estado", "FechaCrea" };
+            String[] encabezado = { "IdHormiga", "HormigaTipo", "CodigoHormiga", "Estado", "Comio", "Region" };
 
             // Obtener los datos de la base de datos
-            ArrayList<HormigaDTO> Hormigas = HormigaBL.getAll();
+            ArrayList<saHormigaComidaDTO> Hormigas = saHormigaComidaBL.getAll();
 
             // Crear un array bidimensional para almacenar los datos
             Object[][] data = new Object[Hormigas.size()][encabezado.length];
 
             // Llenar el array con los datos obtenidos de la base de datos
             for (int i = 0; i < Hormigas.size(); i++) {
-                HormigaDTO Hormiga = Hormigas.get(i);
-                data[i][0] = Hormiga.getIdHormiga();
-                data[i][1] = Hormiga.getIdHormigaTipo();
-                data[i][2] = Hormiga.getCodigo();
-                data[i][3] = Hormiga.getNombre();
-                data[i][4] = Hormiga.getEstado();
-                data[i][5] = Hormiga.getFechaCrea();
+                saHormigaComidaDTO Hormiga = Hormigas.get(i);
+                data[i][0] = Hormiga.getSaIdHormiga();
+                data[i][1] = Hormiga.getSaHormigaTipo();
+                data[i][2] = Hormiga.getSaCodigoHormiga();
+                data[i][3] = Hormiga.getSaEstado();
+                data[i][4] = Hormiga.getSaComio();
+                data[i][5] = Hormiga.getSaRegion();
             }
 
             // Crear una nueva tabla con los datos obtenidos
@@ -125,19 +129,7 @@ public class SAPnlAlimentar extends JPanel {
 
     private void setupActions() {
         saBtnRegresar.addActionListener(e -> MainForm());
-    }
-
-    private void PnlAlimentar() {
-        try {
-            removeAll();
-            add(new SAPnlAlimentar());
-            revalidate();
-            repaint();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al cargar PatPnlHormigaSexo",
-                    "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
+        saBtnIdHormiga.addActionListener(e -> mostrarVentanaEmergente());
     }
 
     private void MainForm() {
@@ -159,264 +151,63 @@ public class SAPnlAlimentar extends JPanel {
         saBackgroundImage = imagenFondo.getImage();
     }
 
+    private void mostrarVentanaEmergente() {
+        // Aquí creas y muestras la ventana emergente
+        String idHormiga = JOptionPane.showInputDialog(this, "Ingrese el IdHormiga:");
+        try {
+            if (idHormiga == null) {
+                // Si el usuario cancela, salir del método
+                return;
+            }
+
+            // Validar si el IdHormiga es un número válido
+            int id = 0;
+            try {
+                id = Integer.parseInt(idHormiga);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "El IdHormiga debe ser un número entero", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            saHormigaComidaBL hormigaValidar = new saHormigaComidaBL();
+            if (hormigaValidar.getBy(id) == null) {
+                JOptionPane.showMessageDialog(this, "Esa hormiga no existe", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                SAHormigaRusa hormigaComer = new SAHormigaRusa();
+                SAHervivoro hierva = new SAHervivoro();
+                if (hormigaComer.saBuscar(hierva)) {
+                    hormigaComer.saComer(hierva);
+                    JOptionPane.showMessageDialog(this, "Genial, la hormiga comió", "Éxito",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    hormigaValidar.update(id, "Soldado",
+                            "Hierba");
+                    // Cerrar la ventana AdminPanel actual
+                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                    frame.dispose();
+                    // Crear una nueva instancia de SAPnlReina y mostrarla
+                    JFrame newFrame = new JFrame("Admin Panel");
+                    newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newFrame.add(new SAPnlAlimentar());
+                    newFrame.pack();
+                    newFrame.setSize(700, 700);
+                    frame.setLocationRelativeTo(null);
+                    newFrame.setVisible(true);
+                } else {
+                    // Aquí puedes agregar un mensaje o acción si la hormiga no encontró nada para
+                    // comer
+                }
+            }
+        } catch (Exception e) {
+            // Manejo de excepciones
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(saBackgroundImage, 0, 0, getWidth(), getHeight(), this);
-    }
-
-    private void VentanaCrear() {
-        JPanel panerCrear = new JPanel(new GridLayout(6, 2, 5, 5)); // Ajusta el GridLayout para acomodar el nuevo
-                                                                    // componente
-        panerCrear.setPreferredSize(new Dimension(400, 200));
-        SebLabel lblNombre = new SebLabel("Nombre:");
-        JTextField txtNombre = new JTextField(20);
-
-        SebLabel lblcodigo = new SebLabel("Código:");
-        JTextField txtcodigo = new JTextField(10);
-
-        SebLabel lblTipoHormiga = new SebLabel("Tipo de Hormiga:");
-        String[] opcionesTipoHormiga = { "Rastreador", "Larva", "Soldado", "Zángano" };
-        JComboBox<String> cmbTipoHormiga = new JComboBox<>(opcionesTipoHormiga);
-
-        panerCrear.add(lblNombre);
-        panerCrear.add(txtNombre);
-        panerCrear.add(lblcodigo);
-        panerCrear.add(txtcodigo);
-
-        panerCrear.add(lblTipoHormiga); // Agrega el JLabel para el tipo de hormiga
-        panerCrear.add(cmbTipoHormiga); // Agrega el JComboBox para el tipo de hormiga
-
-        // Mostrar la ventana emergente de entrada con los componentes
-        int opcion = JOptionPane.showConfirmDialog(null, panerCrear, "Crear Usuario", JOptionPane.OK_CANCEL_OPTION);
-
-        // Verificar si se ha presionado "OK"
-        if (opcion == JOptionPane.OK_OPTION) {
-            // Verificar que los campos no estén vacíos
-            if (txtNombre.getText().isEmpty() || txtcodigo.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Los campos Nombre y código no pueden estar vacíos", "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return; // Salir del método sin procesar los datos
-            }
-
-            // Aquí puedes procesar los datos ingresados por el usuario
-            String nombre = txtNombre.getText();
-            String codigo = txtcodigo.getText();
-            String tipoHormiga = cmbTipoHormiga.getSelectedItem().toString();
-
-            // Convertir el tipo de hormiga seleccionado en un formato numérico adecuado
-            Integer idHormigaTipo;
-            switch (tipoHormiga) {
-                case "Rastreador":
-                    idHormigaTipo = 1;
-                    break;
-                case "Larva":
-                    idHormigaTipo = 2;
-                    break;
-                case "Soldado":
-                    idHormigaTipo = 3;
-                    break;
-                case "Zángano":
-                    idHormigaTipo = 4;
-                    break;
-                default:
-                    idHormigaTipo = 1; // Por defecto, asigna Rastreador
-                    break;
-            }
-
-            HormigaBL hormigaNueva = new HormigaBL();
-            try {
-                if (HormigaBL.codigoExiste(codigo)) {
-                    hormigaNueva.add(nombre, idHormigaTipo, codigo);
-                    JOptionPane.showMessageDialog(null, "Hormiga creada con éxito", "Éxito",
-                            JOptionPane.INFORMATION_MESSAGE);
-
-                } else {
-                    JOptionPane.showMessageDialog(null, "Codigo existente", "Pobre",
-                            JOptionPane.INFORMATION_MESSAGE);
-                }
-                // Crear una nueva instancia de AdminPanel y mostrarla
-                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-                frame.dispose();
-                JFrame newFrame = new JFrame("Admin Panel");
-                newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                newFrame.add(new SAPnlAlimentar());
-                newFrame.pack();
-                newFrame.setSize(700, 700);
-                newFrame.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    private void VentanaEditar() {
-        // Crear un panel para solicitar el ID de la hormiga a editar
-        JPanel panelId = new JPanel();
-        JTextField txtId = new JTextField(10);
-        panelId.add(new SebLabel("ID de la Hormiga:"));
-        panelId.add(txtId);
-        // Mostrar un diálogo para que el usuario ingrese el ID de la hormiga a editar
-        int opcionId = JOptionPane.showConfirmDialog(null, panelId, "Ingrese el ID de la Hormiga a Editar",
-                JOptionPane.OK_CANCEL_OPTION);
-
-        // Verificar si se ha presionado "OK" y si el campo de ID no está vacío
-        if (opcionId == JOptionPane.OK_OPTION && !txtId.getText().isEmpty()) {
-            try {
-                int idHormiga = Integer.parseInt(txtId.getText()); // Convertir el texto del campo ID a un entero
-
-                // Obtener la información de la hormiga a editar usando el ID
-                HormigaDTO hormiga = HormigaBL.getBy(idHormiga);
-
-                // Verificar si la hormiga existe
-                if (hormiga == null || HormigaBL.idHormigaExiste(idHormiga + "") == false) {
-                    JOptionPane.showMessageDialog(null, "La hormiga con el ID especificado no existe", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    return; // Salir del método si la hormiga no existe
-                }
-
-                // Utilizar JOptionPane para crear una ventana emergente con los componentes
-                // necesarios
-                JPanel panel = new JPanel(new GridLayout(5, 2, 5, 5));
-
-                SebLabel lblNombre = new SebLabel("Nombre:");
-                JTextField txtNombre = new JTextField(hormiga.getNombre(), 20); // Establecer el nombre de la hormiga en
-                                                                                // el campo de texto
-
-                SebLabel lblCodigo = new SebLabel("Código:");
-                JTextField txtCodigo = new JTextField(hormiga.getCodigo(), 10); // Establecer el código de la hormiga en
-                                                                                // el campo de texto
-
-                SebLabel lblTipoHormiga = new SebLabel("Tipo de Hormiga:");
-                String[] opcionesTipoHormiga = { "Rastreador", "Larva", "Soldado", "Zángano" };
-                JComboBox<String> cmbTipoHormiga = new JComboBox<>(opcionesTipoHormiga);
-                cmbTipoHormiga.setSelectedItem(hormiga.getIdHormigaTipo()); // Establecer el tipo de hormiga en el
-                                                                            // ComboBox
-
-                panel.add(lblNombre);
-                panel.add(txtNombre);
-                panel.add(lblCodigo);
-                panel.add(txtCodigo);
-                panel.add(lblTipoHormiga);
-                panel.add(cmbTipoHormiga);
-
-                // Mostrar la ventana emergente de entrada con los componentes
-                int opcion = JOptionPane.showConfirmDialog(null, panel, "Editar Hormiga", JOptionPane.OK_CANCEL_OPTION);
-
-                // Verificar si se ha presionado "OK"
-                if (opcion == JOptionPane.OK_OPTION) {
-                    // Verificar que los campos no estén vacíos
-                    if (txtNombre.getText().isEmpty() || txtCodigo.getText().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Los campos Nombre y Código no pueden estar vacíos",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        return; // Salir del método sin procesar los datos
-                    }
-
-                    // Obtener los nuevos valores ingresados por el usuario
-                    String nombre = txtNombre.getText();
-                    String codigo = txtCodigo.getText();
-                    String tipoHormiga = cmbTipoHormiga.getSelectedItem().toString();
-
-                    // Convertir el tipo de hormiga seleccionado en un formato numérico adecuado
-                    int idHormigaTipo;
-                    switch (tipoHormiga) {
-                        case "Rastreador":
-                            idHormigaTipo = 1;
-                            break;
-                        case "Larva":
-                            idHormigaTipo = 2;
-                            break;
-                        case "Soldado":
-                            idHormigaTipo = 3;
-                            break;
-                        case "Zángano":
-                            idHormigaTipo = 4;
-                            break;
-                        default:
-                            idHormigaTipo = 1; // Por defecto, asigna Rastreador
-                            break;
-                    }
-
-                    // Crear un nuevo objeto HormigaBL con los valores actualizados
-                    HormigaBL hormigaNueva = new HormigaBL();
-
-                    hormigaNueva.update(idHormiga, nombre, idHormigaTipo, codigo);
-                    // Cerrar la ventana actual
-                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-                    frame.dispose();
-                    // Crear una nueva instancia de AdminPanel y mostrarla
-                    JFrame newFrame = new JFrame("Admin Panel");
-                    newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    newFrame.add(new SAPnlAlimentar());
-                    newFrame.pack();
-                    newFrame.setSize(700, 700);
-                    newFrame.setVisible(true);
-
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "El ID ingresado no es válido", "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error al editar hormiga", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private void VentanaEliminar() {
-        // Crear un panel para solicitar el ID de la hormiga a eliminar
-        JPanel panelId = new JPanel();
-        JTextField txtId = new JTextField(10);
-        panelId.add(new SebLabel("ID de la Hormiga:"));
-        panelId.add(txtId);
-        // Mostrar un diálogo para que el usuario ingrese el ID de la hormiga a eliminar
-        int opcionId = JOptionPane.showConfirmDialog(null, panelId, "Ingrese el ID de la Hormiga a Eliminar",
-                JOptionPane.OK_CANCEL_OPTION);
-
-        // Verificar si se ha presionado "OK" y si el campo de ID no está vacío
-        if (opcionId == JOptionPane.OK_OPTION && !txtId.getText().isEmpty()) {
-            try {
-                int idHormiga = Integer.parseInt(txtId.getText()); // Convertir el texto del campo ID a un entero
-                System.out.println(idHormiga);
-                // Obtener la información de la hormiga a eliminar usando el ID
-                HormigaDTO hormiga = HormigaBL.getBy(idHormiga);
-
-                // Verificar si la hormiga existe
-                if (hormiga == null || HormigaBL.idHormigaExiste(idHormiga + "") == false) {
-                    JOptionPane.showMessageDialog(null, "La hormiga con el ID especificado no existe", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    return; // Salir del método si la hormiga no existe
-                }
-
-                // Preguntar al usuario si está seguro de eliminar la hormiga
-                int confirmacion = JOptionPane.showConfirmDialog(null,
-                        "¿Está seguro de eliminar la hormiga con ID " + idHormiga + "?", "Confirmar Eliminación",
-                        JOptionPane.YES_NO_OPTION);
-                if (confirmacion == JOptionPane.YES_OPTION) {
-                    // Eliminar la hormiga
-                    HormigaBL hormigaNueva = new HormigaBL();
-                    hormigaNueva.delete(idHormiga);
-                    JOptionPane.showMessageDialog(null, "Hormiga eliminada exitosamente", "Eliminación Exitosa",
-                            JOptionPane.INFORMATION_MESSAGE);
-
-                    // Cerrar la ventana actual
-                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-                    frame.dispose();
-                    // Crear una nueva instancia de AdminPanel y mostrarla
-                    JFrame newFrame = new JFrame("Admin Panel");
-                    newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    newFrame.add(new SAPnlAlimentar());
-                    newFrame.pack();
-                    newFrame.setSize(700, 700);
-                    newFrame.setVisible(true);
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "El ID ingresado no es válido", "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error al eliminar la hormiga", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
     }
 
 }

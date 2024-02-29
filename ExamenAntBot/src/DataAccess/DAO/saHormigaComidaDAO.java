@@ -12,7 +12,6 @@ import DataAccess.DTO.saHormigaComidaDTO;
 
 public class saHormigaComidaDAO extends SQLiteDataHelper implements IDAO<saHormigaComidaDTO> {
 
-   
     @Override
     public boolean create(saHormigaComidaDTO entity) throws Exception {
         return false;
@@ -21,7 +20,7 @@ public class saHormigaComidaDAO extends SQLiteDataHelper implements IDAO<saHormi
     @Override
     public ArrayList<saHormigaComidaDTO> readAll() throws Exception {
         ArrayList<saHormigaComidaDTO> list = new ArrayList<>();
-        String query = "SELECT IdHormiga,HormigaTipo,CodigoHormiga,Estado,Comio FROM saHormigaComida WHERE Estado = 'A'";
+        String query = "SELECT IdHormiga,HormigaTipo,CodigoHormiga,Estado,Comio, Region FROM saHormigaComida WHERE Estado = 'A'";
         try {
             Connection conn = openConnection();
             Statement stmt = conn.createStatement();
@@ -44,7 +43,8 @@ public class saHormigaComidaDAO extends SQLiteDataHelper implements IDAO<saHormi
     @Override
     public saHormigaComidaDTO readBy(Integer id) throws Exception {
         saHormigaComidaDTO oS = new saHormigaComidaDTO();
-        String query = "SELECT IdHormiga,HormigaTipo,CodigoHormiga,Estado,Comio FROM saHormigaComida WHERE Estado = 'A'AND IdHormiga = "
+        oS = null;
+        String query = "SELECT IdHormiga,HormigaTipo,CodigoHormiga,Estado,Comio, Region FROM saHormigaComida WHERE Estado = 'A'AND IdHormiga = "
                 + id.toString();
         try {
             Connection conn = openConnection();
@@ -52,11 +52,11 @@ public class saHormigaComidaDAO extends SQLiteDataHelper implements IDAO<saHormi
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 oS = new saHormigaComidaDTO(rs.getInt(1),
-                                            rs.getString(2),
-                                            rs.getString(3),
-                                            rs.getString(4),
-                                            rs.getString(5),
-                                            rs.getString(6));
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6));
             }
         } catch (SQLException e) {
             throw e;
@@ -66,15 +66,14 @@ public class saHormigaComidaDAO extends SQLiteDataHelper implements IDAO<saHormi
 
     @Override
     public boolean update(saHormigaComidaDTO entity) throws Exception {
-        
-        String query = "UPDATE saHormigaComida SET HormigaTipo = ?,CodigoHormiga = ?,Comio = ? WHERE IdHormiga = ?";
+
+        String query = "UPDATE saHormigaComida SET HormigaTipo = ?,Comio = ? WHERE IdHormiga = ?";
         try {
             Connection conn = openConnection();
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, entity.getSaHormigaTipo());
-            stmt.setString(2, entity.getSaCodigoHormiga());
-            stmt.setString(3, entity.getSaComio());
-            stmt.setInt(4, entity.getSaIdHormiga());
+            stmt.setString(2, entity.getSaComio());
+            stmt.setInt(3, entity.getSaIdHormiga());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {

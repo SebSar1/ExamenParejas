@@ -26,6 +26,9 @@ public class SAHormigaRusa extends Hormiga implements IhomigaExtremidad, ISAIA, 
         this.clasificacion = clasificacion;
     }
 
+    public SAHormigaRusa() {
+    }
+
     public String getClasificacion() {
         return clasificacion;
     }
