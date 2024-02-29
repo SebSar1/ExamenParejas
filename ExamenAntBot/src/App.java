@@ -21,11 +21,8 @@ import UserInterface.Form.SplashScreenForm;
 
 public class App {
     public static void main(String[] args) throws InterruptedException {
-        SAHormigaRusa hormifa = new SAHormigaRusa("sebas", "prueba");
-        if (hormifa.saBuscar(new SAHervivoro()))
-            System.out.println("se encontro");
-        hormifa.saComer(new SAHervivoro());
-        // iniciarSistema();
+
+        iniciarSistema();
     }
 
     public static void iniciarSistema() throws InterruptedException {
@@ -36,9 +33,9 @@ public class App {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        // SplashScreenForm.show();
-        // Rusia oRusia = new Rusia();
-        // oRusia.iniciar();
+        SplashScreenForm.show();
+        Rusia oRusia = new Rusia();
+        oRusia.iniciar();
         MainForm mainForm = new MainForm();
         JFrame frame = new JFrame("AntBots");
         frame.add(mainForm);
